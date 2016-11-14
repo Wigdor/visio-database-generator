@@ -1,112 +1,58 @@
+Option Explicit
+
 Sub Test()
 
-Dim excelApp As Object, excelBook As Object, tableNames As Object
-Dim myEntity As Visio.Shape, myPK As Visio.Shape, myAttr As Visio.Shape
+	Dim excelApp As Object, excelBook As Object, tableNames As Object
+	Dim myEntity As Visio.Shape, myPK As Visio.Shape, myAttr As Visio.Shape
 
-Dim newAttr As Visio.Shape
+	Dim newAttr As Visio.Shape
 
-Dim anAttr As Visio.Master
-Dim addAnAttr As Visio.Shape
+	Dim anAttr As Visio.Master
+	Dim addAnAttr As Visio.Shape
 
-Dim aKey As Visio.Master
+	Dim aKey As Visio.Master
 
-Dim entityID As Variant
+	Dim entityID As Variant
 
-Dim anEntity As Visio.Master
-Dim newEntity As Visio.Shape
-Dim vsoSelection As Object
+	Dim anEntity As Visio.Master
+	Dim newEntity As Visio.Shape
+	Dim vsoSelection As Object
 
-Dim resizeShape As Object
+	Dim resizeShape As Object
+	Dim row, column As Integer
+    Dim excelFilePath As String
 
-Set excelApp = CreateObject("Excel.Application")
-Let excelFilePath = "C:\Users\awigdor\Information Schema v2.xlsm"
-Set excelBook = excelApp.Workbooks.Open(excelFilePath)
-Set tableNames = excelBook.Sheets("RadiusImport_Tables")
+	Set excelApp = CreateObject("Excel.Application")
+	Let excelFilePath = "C:\Users\awigdor\Information Schema v2.xlsm"
+	Set excelBook = excelApp.Workbooks.Open(excelFilePath)
+	Set tableNames = excelBook.Sheets("RadiusImport_Tables")
 
-Set anEntity = Application.Documents("DBCROW_U.VSSX").Masters("Entity")
-Set aKey = Application.Documents("DBCROW_U.VSSX").Masters("Primary Key Attribute")
-Set anAttr = Application.Documents("DBCROW_U.VSSX").Masters("Attribute")
+	Set anEntity = Application.Documents("DBCROW_U.VSSX").Masters("Entity")
+	Set aKey = Application.Documents("DBCROW_U.VSSX").Masters("Primary Key Attribute")
+	Set anAttr = Application.Documents("DBCROW_U.VSSX").Masters("Attribute")
 
-For r = 19 To 22
+	For row = 19 To 22
 
-Set myEntity = ActivePage.Drop(anEntity, 0, 8)
-Let entityID = myEntity.ID
+		Set myEntity = ActivePage.Drop(anEntity, 0, 8)
+		Let entityID = myEntity.ID
 
-Application.ActiveWindow.Page.Shapes.ItemFromID(entityID).CellsSRC(visSectionControls, 0, visCtlX).FormulaU = "4.5 in"
+		Application.ActiveWindow.Page.Shapes.ItemFromID(entityID).CellsSRC(visSectionControls, 0, visCtlX).FormulaU = "4.5 in"
 
-myEntity.Text = tableNames.Cells(r, 1).Value
+		myEntity.Text = tableNames.Cells(row, 1).Value
 
-Set myPK = ActivePage.DropIntoList(aKey, ActivePage.Shapes.ItemFromID(entityID), 2)
-myPK.Text = tableNames.Cells(r, 2).Value
+		Set myPK = ActivePage.DropIntoList(aKey, ActivePage.Shapes.ItemFromID(entityID), 2)
+		myPK.Text = tableNames.Cells(row, 2).Value
 
-c = 3
-Do While Not (IsEmpty(tableNames.Cells(r, c).Value))
-    
-    Set addAnAttr = ActivePage.DropIntoList(anAttr, ActivePage.Shapes.ItemFromID(entityID), c)
-    
-    addAnAttr.Text = tableNames.Cells(r, c).Value
-    c = c + 1
-    
-Loop
+		column = 3
+			Do While Not (IsEmpty(tableNames.Cells(row, column).Value))
+				
+				Set addAnAttr = ActivePage.DropIntoList(anAttr, ActivePage.Shapes.ItemFromID(entityID), column)
+				
+				addAnAttr.Text = tableNames.Cells(row, column).Value
+				column = column + 1
+				
+			Loop
 
-Next r
-
-End Sub
-
-
-OLD CODE BELOW
-
-
-Sub ConstructDatabase()
-
-Dim excelApp As Object, excelBook As Object, tableNames As Object
-Dim myShapes As Visio.Shapes
-Dim myEntity As Visio.Shape, myPK As Visio.Shape, myAttr As Visio.Shape
-
-Set excelApp = CreateObject("Excel.Application")
-Let excelFilePath = "C:\Users\awigdor\Information Schema v2.xlsm"
-Set excelBook = excelApp.Workbooks.Open(excelFilePath)
-Set tableNames = excelBook.Sheets("RadiusImport_Tables")
-
-Let x = 0
-Let y = 8
-
-Let s = 1
-
-For r = 1 To 87
-    If x > 10 Then
-        Let x = 0 And y = y - 1
-    End If
-    
-    Set myEntity = ActivePage.Drop(Application.Documents("DBCROW_U.VSSX").Masters("Entity"), x, y)
-    
-    x = x + 2
-    Set myShapes = ActivePage.Shapes
-    
-    myEntity.Text = tableNames.Cells(r, 1).Value
-    s = s + 1
-    
-    Set myPK = myShapes(s)
-        myPK.Text = tableNames.Cells(r, 2).Value
-    s = s + 2
-
-    Let c = 3
-    Let a = 4
-    
-    Do While Not (IsEmpty(tableNames.Cells(r, c).Value))
-        If a > 5 Then
-            Set myAttr = ActivePage.DropIntoList(Application.Documents("DBCROW_U.VSSX").Masters("Attribute"), myEntity, a)
-        End If
-        
-        Set myAttr = myShapes(s)
-        myAttr.Text = tableNames.Cells(r, c).Value
-        
-        c = c + 1
-        a = a + 1
-        s = s + 1
-    
-    Loop
-
-Next r
+	Next row
 
 End Sub
