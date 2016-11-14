@@ -1,0 +1,53 @@
+Sub ConstructDatabase()
+
+Dim excelApp As Object, excelBook As Object, tableNames As Object
+Dim myShapes As Visio.Shapes
+Dim myEntity As Visio.Shape, myPK As Visio.Shape, myAttr As Visio.Shape
+
+Set excelApp = CreateObject("Excel.Application")
+Let excelFilePath = "C:\Users\awigdor\Information Schema v2.xlsm"
+Set excelBook = excelApp.Workbooks.Open(excelFilePath)
+Set tableNames = excelBook.Sheets("RadiusImport_Tables")
+
+Let x = 0
+Let y = 8
+
+Let s = 1
+
+For r = 1 To 87
+    If x > 10 Then
+        Let x = 0 And y = y - 1
+    End If
+    
+    Set myEntity = ActivePage.Drop(Application.Documents("DBCROW_U.VSSX").Masters("Entity"), x, y)
+    
+    x = x + 2
+    Set myShapes = ActivePage.Shapes
+    
+    myEntity.Text = tableNames.Cells(r, 1).Value
+    s = s + 1
+    
+    Set myPK = myShapes(s)
+        myPK.Text = tableNames.Cells(r, 2).Value
+    s = s + 2
+
+    Let c = 3
+    Let a = 4
+    
+    Do While Not (IsEmpty(tableNames.Cells(r, c).Value))
+        If a > 5 Then
+            Set myAttr = ActivePage.DropIntoList(Application.Documents("DBCROW_U.VSSX").Masters("Attribute"), myEntity, a)
+        End If
+        
+        Set myAttr = myShapes(s)
+        myAttr.Text = tableNames.Cells(r, c).Value
+        
+        c = c + 1
+        a = a + 1
+        s = s + 1
+    
+    Loop
+
+Next r
+
+End Sub
