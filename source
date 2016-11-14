@@ -1,3 +1,62 @@
+Sub Test()
+
+Dim excelApp As Object, excelBook As Object, tableNames As Object
+Dim myEntity As Visio.Shape, myPK As Visio.Shape, myAttr As Visio.Shape
+
+Dim newAttr As Visio.Shape
+
+Dim anAttr As Visio.Master
+Dim addAnAttr As Visio.Shape
+
+Dim aKey As Visio.Master
+
+Dim entityID As Variant
+
+Dim anEntity As Visio.Master
+Dim newEntity As Visio.Shape
+Dim vsoSelection As Object
+
+Dim resizeShape As Object
+
+Set excelApp = CreateObject("Excel.Application")
+Let excelFilePath = "C:\Users\awigdor\Information Schema v2.xlsm"
+Set excelBook = excelApp.Workbooks.Open(excelFilePath)
+Set tableNames = excelBook.Sheets("RadiusImport_Tables")
+
+Set anEntity = Application.Documents("DBCROW_U.VSSX").Masters("Entity")
+Set aKey = Application.Documents("DBCROW_U.VSSX").Masters("Primary Key Attribute")
+Set anAttr = Application.Documents("DBCROW_U.VSSX").Masters("Attribute")
+
+For r = 19 To 22
+
+Set myEntity = ActivePage.Drop(anEntity, 0, 8)
+Let entityID = myEntity.ID
+
+Application.ActiveWindow.Page.Shapes.ItemFromID(entityID).CellsSRC(visSectionControls, 0, visCtlX).FormulaU = "4.5 in"
+
+myEntity.Text = tableNames.Cells(r, 1).Value
+
+Set myPK = ActivePage.DropIntoList(aKey, ActivePage.Shapes.ItemFromID(entityID), 2)
+myPK.Text = tableNames.Cells(r, 2).Value
+
+c = 3
+Do While Not (IsEmpty(tableNames.Cells(r, c).Value))
+    
+    Set addAnAttr = ActivePage.DropIntoList(anAttr, ActivePage.Shapes.ItemFromID(entityID), c)
+    
+    addAnAttr.Text = tableNames.Cells(r, c).Value
+    c = c + 1
+    
+Loop
+
+Next r
+
+End Sub
+
+
+OLD CODE BELOW
+
+
 Sub ConstructDatabase()
 
 Dim excelApp As Object, excelBook As Object, tableNames As Object
